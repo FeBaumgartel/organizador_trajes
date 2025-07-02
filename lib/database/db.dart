@@ -26,7 +26,7 @@ class DB {
     await db.execute(_grupo);
     await db.execute(_categoria);
     await db.execute(_traje);
-    await db.execute(_pecaTraje);
+    await db.execute(_peca);
     await db.execute(_integrante);
     await db.execute(_trajeIntegrante);
     await db.execute(_pecaIntegrante);
@@ -52,15 +52,21 @@ class DB {
     CREATE TABLE trajes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
+      quantidade_completos INTEGER,
+      quantidade_usados INTEGER,
       categoria_id INTEGER NOT NULL,
+      grupo_id INTEGER NOT NULL,
       FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+      FOREIGN KEY (grupo_id) REFERENCES grupos(id)
     );
   ''';
 
-  String get _pecaTraje => '''
-    CREATE TABLE pecas_traje (
+  String get _peca => '''
+    CREATE TABLE pecas (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
+      quantidade INTEGER,
+      quantidade_usados INTEGER,
       traje_id INTEGER NOT NULL,
       FOREIGN KEY (traje_id) REFERENCES trajes(id)
     );
@@ -95,7 +101,7 @@ class DB {
       peca_id INTEGER NOT NULL,
       traje_id INTEGER NOT NULL,
       FOREIGN KEY (integrante_id) REFERENCES integrantes(id),
-      FOREIGN KEY (peca_id) REFERENCES pecas_traje(id),
+      FOREIGN KEY (peca_id) REFERENCES pecas(id),
       FOREIGN KEY (traje_id) REFERENCES trajes(id)
     );
   ''';

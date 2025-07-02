@@ -1,0 +1,73 @@
+import '../database/db.dart';
+import '../models/traje.dart';
+
+class TrajeRepository {
+  Future<int> inserir(Traje traje) async {
+    final db = await DB.instance.database;
+    return await db.insert('trajes', traje.toMap());
+  }
+
+  Future<List<Traje>> listarTodos() async {
+    final db = await DB.instance.database;
+    final resultado = await db.rawQuery('''
+      SELECT 
+        trajes.id AS traje_id,
+        trajes.nome AS traje_nome,
+        trajes.quantidade_completos AS traje_quantidade_completos,
+        trajes.quantidade_usados AS traje_quantidade_usados,
+        categorias.id AS categoria_id,
+        categorias.nome AS categoria_nome,
+        grupos.id AS grupo_id,
+        grupos.nome AS grupo_nome
+      FROM trajes
+      INNER JOIN categorias ON trajes.categoria_id = categorias.id
+      INNER JOIN grupos ON trajes.grupo_id = grupos.id
+    ''');
+
+    return resultado.map((map) => Traje.fromMap(map)).toList();
+  }
+
+  Future<Traje> buscarPorId(int id) async {
+    final db = await DB.instance.database;
+    final resultado = await db.rawQuery('''
+      SELECT 
+        trajes.id AS traje_id,
+        trajes.nome AS traje_nome,
+        trajes.quantidade_completos AS traje_quantidade_completos,
+        trajes.quantidade_usados AS traje_quantidade_usados,
+        categorias.id AS categoria_id,
+        categorias.nome AS categoria_nome,
+        grupos.id AS grupo_id,
+        grupos.nome AS grupo_nome
+      FROM trajes
+      INNER JOIN categorias ON trajes.categoria_id = categorias.id
+      INNER JOIN grupos ON trajes.grupo_id = grupos.id
+      WHERE trajes.id = ?
+    ''', [id]);
+
+    if (resultado.isNotEmpty) {
+      return Traje.fromMap(resultado.first);
+    } else {
+      throw Exception('Traje não encontrado');
+    }
+  }
+
+  Future<int> atualizar(Traje traje) async {
+    final db = await DB.instance.database;
+    return await db.update(
+      'trajes',
+      traje.toMap(),
+      where: 'id = ?',
+      whereArgs: [traje.id],
+    );
+  }
+
+  Future<int> deletar(int id) async {
+    final db = await DB.instance.database;
+    return await db.delete(
+      'trajes',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+}
