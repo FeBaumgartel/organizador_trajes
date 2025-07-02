@@ -13,6 +13,17 @@ class GrupoRepository {
     return resultado.map((map) => Grupo.fromMap(map)).toList();
   }
 
+  Future<List<Grupo>> listarGruposPaginado(int limit, int offset) async {
+  final db = await DB.instance.database;
+  final List<Map<String, dynamic>> maps = await db.query(
+    'grupos',
+    limit: limit,
+    offset: offset,
+    orderBy: 'id DESC',
+  );
+  return maps.map((map) => Grupo.fromMap(map)).toList();
+}
+
   Future<int> atualizar(Grupo grupo) async {
     final db = await DB.instance.database;
     return await db.update(

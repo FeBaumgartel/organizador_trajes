@@ -4,17 +4,17 @@ class Grupo {
 
   Grupo({this.id, required this.nome});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'nome': nome,
-    };
-  }
-
   factory Grupo.fromMap(Map<String, dynamic> map) {
     return Grupo(
-      id: map['id'],
-      nome: map['nome'],
+      id: map['grupo_id'] ?? map['id'],
+      nome: map['grupo_nome'] ?? map['nome'],
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      if (id != null) 'id': id,
+      'nome': nome,
+    };
   }
 }

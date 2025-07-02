@@ -71,7 +71,9 @@ class DB {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
       categoria_id INTEGER NOT NULL,
-      FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+      grupo_id INTEGER NOT NULL,
+      FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+      FOREIGN KEY (grupo_id) REFERENCES grupos(id)
     );
   ''';
 
