@@ -179,11 +179,9 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                   labelText: 'Grupo',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
-                style: const TextStyle(color: Colors.white),
-                value: _grupos.firstWhere(
-                  (g) => g.id == _grupoSelecionado?.id,
-                  orElse: () => Grupo(nome: ''),
-                ),
+                value: _grupos.any((g) => g.id == _grupoSelecionado?.id)
+                  ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
+                  : null,
                 onChanged: (grupo) {
                   setState(() => _grupoSelecionado = grupo);
                   _carregarCategoriasDoGrupo(grupo!.id!);
@@ -194,6 +192,14 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                     child: Text(grupo.nome),
                   );
                 }).toList(),
+                selectedItemBuilder: (BuildContext context) {
+                  return _grupos.map((grupo) {
+                    return Text(
+                      grupo.nome,
+                      style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                    );
+                  }).toList();
+                },
                 validator: (value) => value == null ? 'Selecione um grupo' : null,
               ),
               const SizedBox(height: 16),
@@ -204,11 +210,9 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                         labelText: 'Categoria',
                         labelStyle: TextStyle(color: Colors.white),
                       ),
-                      style: const TextStyle(color: Colors.white),
-                      value: _categorias.firstWhere(
-                        (c) => c.id == _categoriaSelecionada?.id,
-                        orElse: () => Categoria(nome: '', grupo: Grupo(nome: '')),
-                      ),
+                      value: _categorias.any((g) => g.id == _categoriaSelecionada?.id)
+                        ? _categorias.firstWhere((g) => g.id == _categoriaSelecionada?.id)
+                        : null,
                       onChanged: (categoria) {
                         setState(() {
                           _categoriaSelecionada = categoria;
@@ -220,6 +224,14 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                           child: Text(categoria.nome),
                         );
                       }).toList(),
+                      selectedItemBuilder: (BuildContext context) {
+                        return _categorias.map((categoria) {
+                          return Text(
+                            categoria.nome,
+                            style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                          );
+                        }).toList();
+                      },
                       validator: (value) => value == null ? 'Selecione uma categoria' : null,
                     ),
               const SizedBox(height: 24),

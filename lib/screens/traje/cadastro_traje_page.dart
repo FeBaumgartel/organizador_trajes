@@ -161,7 +161,6 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                   labelText: 'Grupo',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
-                style: const TextStyle(color: Colors.white),
                 value: _grupoSelecionado,
                 onChanged: (grupo) {
                   setState(() => _grupoSelecionado = grupo);
@@ -173,6 +172,14 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                     child: Text(grupo.nome),
                   );
                 }).toList(),
+                selectedItemBuilder: (BuildContext context) {
+                  return _grupos.map((grupo) {
+                    return Text(
+                      grupo.nome,
+                      style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                    );
+                  }).toList();
+                },
                 validator: (value) =>
                     value == null ? 'Selecione um grupo' : null,
               ),
@@ -184,7 +191,6 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                         labelText: 'Categoria',
                         labelStyle: TextStyle(color: Colors.white),
                       ),
-                      style: const TextStyle(color: Colors.white),
                       value: _categoriaSelecionada,
                       onChanged: (categoria) {
                         setState(() {
@@ -197,6 +203,14 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                           child: Text(categoria.nome),
                         );
                       }).toList(),
+                      selectedItemBuilder: (BuildContext context) {
+                        return _categorias.map((categoria) {
+                          return Text(
+                            categoria.nome,
+                            style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                          );
+                        }).toList();
+                      },
                       validator: (value) =>
                           value == null ? 'Selecione uma categoria' : null,
                     ),
