@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:organizador_trajes/database/db.dart';
 import '../../models/categoria.dart';
 import '../../repositories/categoria_repository.dart';
 import 'cadastro_categoria_page.dart';
+import 'editar_categoria_page.dart';
 import '../widgets/base_scaffold.dart';
 
 class CategoriasPage extends StatefulWidget {
@@ -52,9 +52,32 @@ class _CategoriasPageState extends State<CategoriasPage> {
     });
   }
 
-  Future<void> _deletarCategoria(int id) async {
-    await _repository.deletar(id);
-    _resetarLista();
+  void _editarCategoria(Categoria categoria) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditarCategoriaPage(categoria: categoria),
+      ),
+    );
+  }
+
+  void _deletarCategoria(Categoria categoria) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: Text('Deseja realmente excluir a categoria "${categoria.nome}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await _repository.deletar(categoria.id!);
+      _resetarLista();
+    }
   }
 
   void _resetarLista() {
@@ -106,9 +129,18 @@ class _CategoriasPageState extends State<CategoriasPage> {
                       'Grupo: ${categoria.grupo.nome}',
                       style: const TextStyle(color: Colors.white54),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.white),
-                      onPressed: () => _deletarCategoria(categoria.id!),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.white),
+                          onPressed: () => _editarCategoria(categoria),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.redAccent),
+                          onPressed: () => _deletarCategoria(categoria),
+                        ),
+                      ],
                     ),
                   );
                 } else {

@@ -26,4 +26,17 @@ class Categoria {
       'grupo_id': grupo.id, // Usa apenas o id para salvar no banco
     };
   }
+
+  // Método copyWith
+  Categoria copyWith({
+    int? id,
+    String? nome,
+    Grupo? grupo,
+  }) {
+    return Categoria(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      grupo: grupo ?? this.grupo,
+    );
+  }
 }

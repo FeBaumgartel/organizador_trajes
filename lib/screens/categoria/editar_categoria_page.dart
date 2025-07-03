@@ -1,5 +1,3 @@
-// lib/screens/cadastro_categoria_page.dart
-
 import 'package:flutter/material.dart';
 import '../../models/categoria.dart';
 import '../../models/grupo.dart';
@@ -7,26 +5,31 @@ import '../../repositories/categoria_repository.dart';
 import '../../repositories/grupo_repository.dart';
 import '../widgets/base_scaffold.dart';
 
-class CadastroCategoriaPage extends StatefulWidget {
-  const CadastroCategoriaPage({super.key});
+class EditarCategoriaPage extends StatefulWidget {
+  final Categoria categoria;
+
+  const EditarCategoriaPage({super.key, required this.categoria});
 
   @override
-  State<CadastroCategoriaPage> createState() => _CadastroCategoriaPageState();
+  _EditarCategoriaPageState createState() => _EditarCategoriaPageState();
 }
 
-class _CadastroCategoriaPageState extends State<CadastroCategoriaPage> {
-  final _formKey = GlobalKey<FormState>();
+class _EditarCategoriaPageState extends State<EditarCategoriaPage> {
+  final GrupoRepository _grupoRepository = GrupoRepository();
+  final CategoriaRepository _categoriaRepository = CategoriaRepository();
+
   final TextEditingController _nomeController = TextEditingController();
 
-  final CategoriaRepository _categoriaRepository = CategoriaRepository();
-  final GrupoRepository _grupoRepository = GrupoRepository();
-
   List<Grupo> _grupos = [];
+
   Grupo? _grupoSelecionado;
 
   @override
   void initState() {
     super.initState();
+    _nomeController.text = widget.categoria.nome;
+
+    _grupoSelecionado = widget.categoria.grupo; // seleciona o grupo atual
     _carregarGrupos();
   }
 
@@ -38,21 +41,22 @@ class _CadastroCategoriaPageState extends State<CadastroCategoriaPage> {
   }
 
   Future<void> _salvar() async {
-    if (_formKey.currentState!.validate() && _grupoSelecionado != null) {
-      final novaCategoria = Categoria(
-        nome: _nomeController.text,
-        grupo: Grupo(id: _grupoSelecionado!.id!, nome: ''), // só precisa do id nesse ponto
-      );
+    final atualizadoCategoria = widget.categoria.copyWith(
+      nome: _nomeController.text,
+      grupo: _grupoSelecionado!,
+    );
 
-      await _categoriaRepository.inserir(novaCategoria);
-      if (mounted) Navigator.pop(context, true);
-    }
+    // Salva a categoria atualizado
+    await _categoriaRepository.atualizar(atualizadoCategoria);
+
+
+    if (mounted) Navigator.pop(context, true);
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: 'Cadastrar Categoria',
+      title: 'Editar Categoria',
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -71,35 +75,37 @@ class _CadastroCategoriaPageState extends State<CadastroCategoriaPage> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
             DropdownButtonFormField<Grupo>(
               decoration: const InputDecoration(
                 labelText: 'Grupo',
                 labelStyle: TextStyle(color: Colors.white),
               ),
-              dropdownColor: Colors.black87,
-              value: _grupoSelecionado,
+              value: _grupos.any((g) => g.id == _grupoSelecionado?.id)
+                ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
+                : null,
               onChanged: (grupo) {
-                setState(() {
-                  _grupoSelecionado = grupo;
-                });
+                setState(() => _grupoSelecionado = grupo);
               },
               items: _grupos.map((grupo) {
-                return DropdownMenuItem<Grupo>(
+                return DropdownMenuItem(
                   value: grupo,
-                  child: Text(
-                    grupo.nome,
-                    style: const TextStyle(color: Colors.white),
-                  ),
+                  child: Text(grupo.nome),
                 );
               }).toList(),
-              validator: (value) =>
-                  value == null ? 'Selecione um grupo' : null,
+              selectedItemBuilder: (BuildContext context) {
+                return _grupos.map((grupo) {
+                  return Text(
+                    grupo.nome,
+                    style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                  );
+                }).toList();
+              },
+              validator: (value) => value == null ? 'Selecione um grupo' : null,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _salvar,
-              child: const Text('Salvar'),
+              child: const Text('Salvar Alterações'),
             ),
           ],
         ),
