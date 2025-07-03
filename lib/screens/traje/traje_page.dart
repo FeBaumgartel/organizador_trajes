@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:organizador_trajes/screens/traje/cadastro_traje_page.dart';
 import '../../models/traje.dart';
 import '../../models/peca.dart';
 import '../../repositories/traje_repository.dart';
 import '../../repositories/peca_repository.dart';
 import '../widgets/base_scaffold.dart';
+import 'editar_traje_page.dart'; // Tela de edição
 
 class TrajesPage extends StatefulWidget {
   const TrajesPage({super.key});
@@ -43,7 +45,7 @@ class _TrajesPageState extends State<TrajesPage> {
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novosTrajes = await _trajeRepository.listarTodos(); // aqui pode adicionar paginação se precisar
+    final novosTrajes = await _trajeRepository.listarTodos(); // Aqui pode adicionar paginação se precisar
     for (var traje in novosTrajes) {
       final pecas = await _pecaRepository.listarPorTraje(traje.id!);
       _pecasPorTraje[traje.id!] = pecas;
@@ -57,6 +59,16 @@ class _TrajesPageState extends State<TrajesPage> {
         _hasMore = false;
       }
     });
+  }
+
+  // Função para navegar para a tela de edição
+  void _editarTraje(Traje traje) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditarTrajePage(traje: traje),
+      ),
+    );
   }
 
   @override
@@ -84,6 +96,10 @@ class _TrajesPageState extends State<TrajesPage> {
                     subtitle: Text(
                       'Grupo: ${traje.grupo.nome} | Categoria: ${traje.categoria.nome} | Qtd. Completos: ${traje.quantidadeCompletos}',
                       style: const TextStyle(color: Colors.white70),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.white),
+                      onPressed: () => _editarTraje(traje), // Chama a função para editar
                     ),
                     children: pecas.isEmpty
                         ? [
@@ -113,6 +129,17 @@ class _TrajesPageState extends State<TrajesPage> {
                 }
               },
             ),
+            
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CadastroTrajePage()),
+          );
+        },
+        child: const Icon(Icons.add),
+        tooltip: 'Cadastrar novo traje',
+      )
     );
   }
 

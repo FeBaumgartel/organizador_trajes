@@ -5,6 +5,7 @@ class Peca{
   String nome;
   int quantidade;
   int? quantidadeUsados;
+  int? trajeId;
   Traje traje;
 
   Peca({
@@ -12,6 +13,7 @@ class Peca{
     required this.nome,
     required this.quantidade,
     this.quantidadeUsados,
+    this.trajeId,
     required this.traje
   });
 
@@ -21,6 +23,7 @@ class Peca{
       nome: map['peca_nome'] ?? map['nome'],
       quantidade: map['peca_quantidade'] ??map['quantidade'],
       quantidadeUsados: map['peca_quantidade_usados'] ??map['quantidade_usados'],
+      trajeId: map['peca_traje_id'] ?? map['traje_id'],
       traje: Traje.fromMap(map),
     );
   }
@@ -33,5 +36,20 @@ class Peca{
       'quantidade_usados': quantidadeUsados,
       'traje_id': traje.id,
     };
+  }
+
+  Peca copyWith({
+    String? nome,
+    int? quantidade,
+    int? quantidadeUsados,
+  }) {
+    return Peca(
+      id: this.id,
+      nome: nome ?? this.nome,
+      quantidade: quantidade ?? this.quantidade,
+      quantidadeUsados: quantidadeUsados ?? this.quantidadeUsados,
+      trajeId: this.trajeId,
+      traje: this.traje,
+    );
   }
 }

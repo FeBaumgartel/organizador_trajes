@@ -1,11 +1,21 @@
+import 'package:organizador_trajes/repositories/peca_repository.dart';
+
 import '../database/db.dart';
 import '../models/traje.dart';
 
 class TrajeRepository {
   Future<int> inserir(Traje traje) async {
+  PecaRepository pecaRepository = PecaRepository();
     final db = await DB.instance.database;
-    return await db.insert('trajes', traje.toMap());
+    int trajeId = await db.insert('trajes', traje.toMap());
+    traje.id = trajeId;
+    for(var peca in traje.pecas ?? []){
+      peca.traje = traje;
+      await pecaRepository.inserir(peca);
+    }
+    return trajeId;
   }
+
 
   Future<List<Traje>> listarTodos() async {
     final db = await DB.instance.database;

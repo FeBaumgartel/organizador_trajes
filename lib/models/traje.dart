@@ -1,3 +1,5 @@
+import 'package:organizador_trajes/models/peca.dart';
+
 import 'categoria.dart';
 import 'grupo.dart';
 
@@ -8,6 +10,7 @@ class Traje{
   int? quantidadeUsados;
   Categoria categoria;
   final Grupo grupo;
+  List<Peca>? pecas;
 
   Traje({
     this.id,
@@ -15,7 +18,8 @@ class Traje{
     required this.quantidadeCompletos,
     this.quantidadeUsados,
     required this.categoria,
-    required this.grupo
+    required this.grupo,
+    this.pecas
   });
 
   factory Traje.fromMap(Map<String, dynamic> map) {
@@ -38,5 +42,24 @@ class Traje{
       'categoria_id': categoria.id,
       'grupo_id': grupo.id,
     };
+  }
+
+  // Método copyWith
+  Traje copyWith({
+    int? id,
+    String? nome,
+    int? quantidadeCompletos,
+    int? quantidadeUsados,
+    Grupo? grupo,
+    Categoria? categoria,
+  }) {
+    return Traje(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      quantidadeCompletos: quantidadeCompletos ?? this.quantidadeCompletos,
+      quantidadeUsados: quantidadeUsados ?? this.quantidadeUsados,
+      grupo: grupo ?? this.grupo,
+      categoria: categoria ?? this.categoria,
+    );
   }
 }

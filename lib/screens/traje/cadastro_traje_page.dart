@@ -8,6 +8,7 @@ import '../../repositories/categoria_repository.dart';
 import '../../repositories/traje_repository.dart';
 import '../../repositories/peca_repository.dart';
 import '../widgets/base_scaffold.dart';
+import 'peca_form.dart'; // Importa o componente PecaForm
 
 class CadastroTrajePage extends StatefulWidget {
   const CadastroTrajePage({super.key});
@@ -36,27 +37,29 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
   bool _carregandoCategorias = false;
 
   // Lista de peças
-  List<Map<String, TextEditingController>> _pecasControllers = [];
+  List<Peca> _pecas = [];
 
   @override
   void initState() {
     super.initState();
     _carregarGrupos();
-    _adicionarPeca(); // pelo menos uma
+    _adicionarPeca(); // pelo menos uma peça inicial
   }
 
   void _adicionarPeca() {
     setState(() {
-      _pecasControllers.add({
-        'nome': TextEditingController(),
-        'quantidade': TextEditingController(),
-      });
+      _pecas.add(Peca(
+        nome: '',
+        quantidade: 0,
+        quantidadeUsados: 0,
+        traje: Traje(nome: "", quantidadeCompletos: 0, categoria: Categoria(nome: '', grupo: Grupo(nome: '')), grupo: Grupo(nome: '')),
+      ));
     });
   }
 
   void _removerPeca(int index) {
     setState(() {
-      _pecasControllers.removeAt(index);
+      _pecas.removeAt(index);
     });
   }
 
@@ -86,7 +89,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
   Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) return;
     if (_grupoSelecionado == null || _categoriaSelecionada == null) return;
-    if (_pecasControllers.isEmpty) {
+    if (_pecas.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Adicione pelo menos uma peça.')),
       );
@@ -98,19 +101,10 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
       quantidadeCompletos: int.parse(_quantidadeCompletosController.text.trim()),
       categoria: _categoriaSelecionada!,
       grupo: _grupoSelecionado!,
+      pecas: _pecas
     );
 
     final id = await _trajeRepository.inserir(traje);
-    traje.id = id; // agora contém o ID
-
-    for (var pecas in _pecasControllers) {
-      final peca = Peca(
-        nome: pecas['nome']!.text.trim(),
-        quantidade: int.parse(pecas['quantidade']!.text.trim()),
-        traje: traje, // agora com ID válido
-      );
-      await _pecaRepository.inserir(peca);
-    }
 
     if (mounted) Navigator.pop(context, true);
   }
@@ -180,33 +174,19 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                           ),
                     const SizedBox(height: 24),
                     const Text('Peças do Traje', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ..._pecasControllers.asMap().entries.map((entry) {
+                    ..._pecas.asMap().entries.map((entry) {
                       int index = entry.key;
-                      var pecas = entry.value;
+                      Peca peca = entry.value;
                       return Column(
                         key: ValueKey(index),
                         children: [
-                          TextFormField(
-                            controller: pecas['nome'],
-                            decoration: InputDecoration(labelText: 'Nome da Peça ${index + 1}'),
-                            validator: (value) =>
-                                value == null || value.trim().isEmpty ? 'Informe o nome' : null,
-                          ),
-                          TextFormField(
-                            controller: pecas['quantidade'],
-                            decoration: const InputDecoration(labelText: 'Quantidade'),
-                            keyboardType: TextInputType.number,
-                            validator: (value) =>
-                                value == null || value.trim().isEmpty ? 'Informe a quantidade' : null,
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: _pecasControllers.length > 1
-                                  ? () => _removerPeca(index)
-                                  : null,
-                            ),
+                          PecaForm(
+                            peca: peca,
+                            onSave: (Peca updatedPeca) {
+                              setState(() {
+                                _pecas[index] = updatedPeca;
+                              });
+                            },
                           ),
                           const Divider(),
                         ],

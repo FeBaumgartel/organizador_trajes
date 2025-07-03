@@ -34,6 +34,9 @@ class PecaRepository {
   }
 
   Future<int> atualizar(Peca peca) async {
+    if(peca.id == null){
+      return await inserir(peca);
+    }
     final db = await DB.instance.database;
     return await db.update(
       'pecas',
