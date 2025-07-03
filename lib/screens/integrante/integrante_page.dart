@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:organizador_trajes/database/db.dart';
 import '../../models/integrante.dart';
 import '../../repositories/integrante_repository.dart';
 import 'cadastro_integrante_page.dart';
+import 'editar_integrante_page.dart';
 import '../widgets/base_scaffold.dart';
 
 class IntegrantesPage extends StatefulWidget {
@@ -52,9 +52,32 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
     });
   }
 
-  Future<void> _deletarIntegrante(int id) async {
-    await _repository.deletar(id);
-    _resetarLista();
+  void _editarIntegrante(Integrante integrante) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditarIntegrantePage(integrante: integrante),
+      ),
+    );
+  }
+
+  void _deletarIntegrante(Integrante integrante) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: Text('Deseja realmente excluir o integrante "${integrante.nome}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await _repository.deletar(integrante.id!);
+      _resetarLista();
+    }
   }
 
   void _resetarLista() {
@@ -106,9 +129,18 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
                       'Grupo: ${integrante.grupo.nome} | Categoria: ${integrante.categoria.nome}',
                       style: const TextStyle(color: Colors.white54),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.white),
-                      onPressed: () => _deletarIntegrante(integrante.id!),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.white),
+                          onPressed: () => _editarIntegrante(integrante),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.redAccent),
+                          onPressed: () => _deletarIntegrante(integrante),
+                        ),
+                      ],
                     ),
                   );
                 } else {

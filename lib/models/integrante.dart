@@ -31,4 +31,19 @@ class Integrante{
       'grupo_id': grupo.id,
     };
   }
+
+  // Método copyWith
+  Integrante copyWith({
+    int? id,
+    String? nome,
+    Grupo? grupo,
+    Categoria? categoria,
+  }) {
+    return Integrante(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      grupo: grupo ?? this.grupo,
+      categoria: categoria ?? this.categoria,
+    );
+  }
 }
