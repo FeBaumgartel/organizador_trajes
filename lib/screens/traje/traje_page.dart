@@ -17,10 +17,9 @@ class TrajesPage extends StatefulWidget {
 class _TrajesPageState extends State<TrajesPage> {
   final TrajeRepository _trajeRepository = TrajeRepository();
   final PecaRepository _pecaRepository = PecaRepository();
-
-  final int _pageSize = 5;
   final ScrollController _scrollController = ScrollController();
 
+  final int _pageSize = 5;
   final List<Traje> _trajes = [];
   final Map<int, List<Peca>> _pecasPorTraje = {};
   bool _isLoading = false;
@@ -41,21 +40,17 @@ class _TrajesPageState extends State<TrajesPage> {
       }
     });
   }
-
+  
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novosTrajes = await _trajeRepository.listarTrajesPaginado(_pageSize, _offset);
-    for (var traje in novosTrajes) {
-      final pecas = await _pecaRepository.listarPorTraje(traje.id!);
-      _pecasPorTraje[traje.id!] = pecas;
-    }
+    final novasIntegrantes = await _trajeRepository.listarTrajesPaginado(_pageSize, _offset);
 
     setState(() {
-      _trajes.addAll(novosTrajes);
-      _offset += _pageSize;
+      _trajes.addAll(novasIntegrantes);
       _isLoading = false;
-      if (novosTrajes.length < _pageSize) {
+      _offset += _pageSize;
+      if (novasIntegrantes.length < _pageSize) {
         _hasMore = false;
       }
     });

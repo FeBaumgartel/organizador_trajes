@@ -32,6 +32,7 @@ class TrajeRepository {
       FROM trajes
       INNER JOIN categorias ON trajes.categoria_id = categorias.id
       INNER JOIN grupos ON trajes.grupo_id = grupos.id
+      LIMIT ? OFFSET ?
     ''', [limit, offset]);
 
     return resultado.map((map) => Traje.fromMap(map)).toList();
