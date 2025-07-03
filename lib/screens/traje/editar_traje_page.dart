@@ -35,7 +35,6 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
   Grupo? _grupoSelecionado;
   Categoria? _categoriaSelecionada;
 
-  bool _carregandoGrupos = true;
   bool _carregandoCategorias = false;
 
   List<Peca> _pecas = [];
@@ -65,7 +64,6 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
     final grupos = await _grupoRepository.listarTodos();
     setState(() {
       _grupos = grupos;
-      _carregandoGrupos = false;
       // não define _grupoSelecionado aqui, pois já foi definido no initState
     });
   }
@@ -111,6 +109,8 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
       nome: _nomeController.text,
       quantidadeCompletos: int.parse(_quantidadeController.text),
       quantidadeUsados: int.tryParse(_quantidadeUsadosController.text),
+      categoria: _categoriaSelecionada!,
+      grupo: _grupoSelecionado!,
     );
 
     // Salva o traje atualizado
@@ -137,7 +137,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
               TextFormField(
                 controller: _nomeController,
                 decoration: const InputDecoration(
-                  labelText: 'Nome do Traje',
+                  labelText: 'Nome do traje',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),
@@ -152,7 +152,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
               TextFormField(
                 controller: _quantidadeController,
                 decoration: const InputDecoration(
-                  labelText: 'Quantidade Completos',
+                  labelText: 'Quantidade completos',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),
@@ -168,7 +168,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
               TextFormField(
                 controller: _quantidadeUsadosController,
                 decoration: const InputDecoration(
-                  labelText: 'Quantidade Usados',
+                  labelText: 'Quantidade usados',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),

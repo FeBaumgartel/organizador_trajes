@@ -6,7 +6,6 @@ import '../../models/peca.dart';
 import '../../repositories/grupo_repository.dart';
 import '../../repositories/categoria_repository.dart';
 import '../../repositories/traje_repository.dart';
-import '../../repositories/peca_repository.dart';
 import '../widgets/base_scaffold.dart';
 import 'peca_form.dart'; // Importa o componente PecaForm
 
@@ -26,7 +25,6 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
   final GrupoRepository _grupoRepository = GrupoRepository();
   final CategoriaRepository _categoriaRepository = CategoriaRepository();
   final TrajeRepository _trajeRepository = TrajeRepository();
-  final PecaRepository _pecaRepository = PecaRepository();
 
   List<Grupo> _grupos = [];
   List<Categoria> _categorias = [];
@@ -34,7 +32,6 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
   Grupo? _grupoSelecionado;
   Categoria? _categoriaSelecionada;
 
-  bool _carregandoGrupos = true;
   bool _carregandoCategorias = false;
 
   // Lista de peças
@@ -62,7 +59,6 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
     final grupos = await _grupoRepository.listarTodos();
     setState(() {
       _grupos = grupos;
-      _carregandoGrupos = false;
     });
   }
 
@@ -100,7 +96,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
       pecas: _pecas
     );
 
-    final id = await _trajeRepository.inserir(traje);
+    await _trajeRepository.inserir(traje);
 
     if (mounted) Navigator.pop(context, true);
   }
@@ -118,7 +114,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
               TextFormField(
                 controller: _nomeController,
                 decoration: const InputDecoration(
-                  labelText: 'Nome do Traje',
+                  labelText: 'Nome do traje',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),
@@ -133,7 +129,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
               TextFormField(
                 controller: _quantidadeCompletosController,
                 decoration: const InputDecoration(
-                  labelText: 'Quantidade Completos',
+                  labelText: 'Quantidade completos',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),
@@ -149,7 +145,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
               TextFormField(
                 controller: _quantidadeUsadosController,
                 decoration: const InputDecoration(
-                  labelText: 'Quantidade Usados',
+                  labelText: 'Quantidade usados',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),
