@@ -20,7 +20,6 @@ class _CadastroGrupoPageState extends State<CadastroGrupoPage> {
       final grupo = Grupo(nome: _nomeController.text);
       await _repository.inserir(grupo);
 
-      // Retorna para a tela anterior (listagem) e sinaliza para recarregar
       if (mounted) Navigator.pop(context, true);
     }
   }
@@ -40,14 +39,11 @@ class _CadastroGrupoPageState extends State<CadastroGrupoPage> {
                 decoration: const InputDecoration(
                   labelText: 'Nome do grupo',
                   labelStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white54),
-                  ),
                 ),
                 style: const TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Informe o nome';
+                    return 'Informe o nome do grupo';
                   }
                   return null;
                 },

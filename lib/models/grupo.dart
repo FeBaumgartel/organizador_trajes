@@ -17,4 +17,15 @@ class Grupo {
       'nome': nome,
     };
   }
+
+  // Método copyWith
+  Grupo copyWith({
+    int? id,
+    String? nome,
+  }) {
+    return Grupo(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+    );
+  }
 }

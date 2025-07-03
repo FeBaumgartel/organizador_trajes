@@ -1,6 +1,7 @@
 // grupos_page.dart
 import 'package:flutter/material.dart';
 import 'cadastro_grupo_page.dart';
+import 'editar_grupo_page.dart';
 import '../../models/grupo.dart';
 import '../../repositories/grupo_repository.dart';
 import '../widgets/base_scaffold.dart';
@@ -52,9 +53,32 @@ class _GruposPageState extends State<GruposPage> {
     });
   }
 
-  Future<void> _deletarGrupo(int id) async {
-    await _repository.deletar(id);
-    _resetarLista();
+  void _editarGrupo(Grupo grupo) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditarGrupoPage(grupo: grupo),
+      ),
+    );
+  }
+
+  void _deletarGrupo(Grupo grupo) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: Text('Deseja realmente excluir o grupo "${grupo.nome}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await _repository.deletar(grupo.id!);
+      _resetarLista();
+    }
   }
 
   void _resetarLista() {
@@ -86,9 +110,18 @@ class _GruposPageState extends State<GruposPage> {
                 grupo.nome,
                 style: const TextStyle(color: Colors.white),
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete, color: Colors.white),
-                onPressed: () => _deletarGrupo(grupo.id!),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.white),
+                    onPressed: () => _editarGrupo(grupo),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.redAccent),
+                    onPressed: () => _deletarGrupo(grupo),
+                  ),
+                ],
               ),
             );
           } else {
