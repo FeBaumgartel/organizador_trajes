@@ -17,7 +17,7 @@ class TrajeRepository {
   }
 
 
-  Future<List<Traje>> listarTodos() async {
+  Future<List<Traje>> listarTrajesPaginado(int limit, int offset) async {
     final db = await DB.instance.database;
     final resultado = await db.rawQuery('''
       SELECT 
@@ -32,7 +32,7 @@ class TrajeRepository {
       FROM trajes
       INNER JOIN categorias ON trajes.categoria_id = categorias.id
       INNER JOIN grupos ON trajes.grupo_id = grupos.id
-    ''');
+    ''', [limit, offset]);
 
     return resultado.map((map) => Traje.fromMap(map)).toList();
   }

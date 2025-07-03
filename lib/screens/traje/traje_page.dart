@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:organizador_trajes/screens/traje/cadastro_traje_page.dart';
 import '../../models/traje.dart';
 import '../../models/peca.dart';
 import '../../repositories/traje_repository.dart';
 import '../../repositories/peca_repository.dart';
 import '../widgets/base_scaffold.dart';
+import 'cadastro_traje_page.dart';
 import 'editar_traje_page.dart'; // Tela de edição
 
 class TrajesPage extends StatefulWidget {
@@ -21,8 +21,8 @@ class _TrajesPageState extends State<TrajesPage> {
   final int _pageSize = 5;
   final ScrollController _scrollController = ScrollController();
 
-  List<Traje> _trajes = [];
-  Map<int, List<Peca>> _pecasPorTraje = {};
+  final List<Traje> _trajes = [];
+  final Map<int, List<Peca>> _pecasPorTraje = {};
   bool _isLoading = false;
   bool _hasMore = true;
   int _offset = 0;
@@ -45,7 +45,7 @@ class _TrajesPageState extends State<TrajesPage> {
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novosTrajes = await _trajeRepository.listarTodos(); // Aqui pode adicionar paginação se precisar
+    final novosTrajes = await _trajeRepository.listarTrajesPaginado(_pageSize, _offset);
     for (var traje in novosTrajes) {
       final pecas = await _pecaRepository.listarPorTraje(traje.id!);
       _pecasPorTraje[traje.id!] = pecas;
@@ -61,6 +61,15 @@ class _TrajesPageState extends State<TrajesPage> {
     });
   }
 
+  void _resetarLista() {
+    setState(() {
+      _trajes.clear();
+      _offset = 0;
+      _hasMore = true;
+    });
+    _carregarMais();
+  }
+
   // Função para navegar para a tela de edição
   void _editarTraje(Traje traje) {
     Navigator.push(
@@ -69,6 +78,25 @@ class _TrajesPageState extends State<TrajesPage> {
         builder: (context) => EditarTrajePage(traje: traje),
       ),
     );
+  }
+
+  void _deletarTraje(Traje traje) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: Text('Deseja realmente excluir o traje "${traje.nome}"?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await _trajeRepository.deletar(traje.id!);
+      _resetarLista();
+    }
   }
 
   @override
@@ -97,9 +125,18 @@ class _TrajesPageState extends State<TrajesPage> {
                       'Grupo: ${traje.grupo.nome} | Categoria: ${traje.categoria.nome} | Qtd. Completos: ${traje.quantidadeCompletos}',
                       style: const TextStyle(color: Colors.white70),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.white),
-                      onPressed: () => _editarTraje(traje), // Chama a função para editar
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.white),
+                          onPressed: () => _editarTraje(traje),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.redAccent),
+                          onPressed: () => _deletarTraje(traje),
+                        ),
+                      ],
                     ),
                     children: pecas.isEmpty
                         ? [
@@ -132,13 +169,17 @@ class _TrajesPageState extends State<TrajesPage> {
             
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
+          final resultado = Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const CadastroTrajePage()),
           );
+
+          if (resultado == true) {
+            _resetarLista();
+          }
         },
-        child: const Icon(Icons.add),
         tooltip: 'Cadastrar novo traje',
+        child: const Icon(Icons.add),
       )
     );
   }
