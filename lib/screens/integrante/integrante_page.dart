@@ -4,6 +4,8 @@ import '../../repositories/integrante_repository.dart';
 import 'cadastro_integrante_page.dart';
 import 'editar_integrante_page.dart';
 import '../widgets/base_scaffold.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import '../widgets/vincular_peca_integrante_page.dart';
 
 class IntegrantesPage extends StatefulWidget {
   const IntegrantesPage({super.key});
@@ -104,11 +106,6 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
   Widget build(BuildContext context) {
     return BaseScaffold(
       title: 'Integrantes',
-      floatingActionButton: FloatingActionButton(
-        onPressed: _abrirCadastro,
-        tooltip: 'Cadastrar novo integrante',
-        child: const Icon(Icons.add),
-      ),
       body: _integrantes.isEmpty && _isLoading
           ? ListView.builder(
               itemCount: 5,
@@ -151,6 +148,27 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
                 }
               },
             ),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Theme.of(context).primaryColor,
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.group_add),
+            label: 'Cadastrar novo integrante',
+            onTap: _abrirCadastro,
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.link),
+            label: 'Associar Peças a Integrante',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const VincularPecaIntegrantePage()),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

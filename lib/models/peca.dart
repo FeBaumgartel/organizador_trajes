@@ -21,8 +21,8 @@ class Peca{
     return Peca(
       id: map['peca_id'] ?? map['id'],
       nome: map['peca_nome'] ?? map['nome'],
-      quantidade: map['peca_quantidade'] ??map['quantidade'],
-      quantidadeUsados: map['peca_quantidade_usados'] ??map['quantidade_usados'],
+      quantidade: map['peca_quantidade'] ?? map['quantidade'],
+      quantidadeUsados: map['peca_quantidade_usados'] ?? map['quantidade_usados'],
       trajeId: map['peca_traje_id'] ?? map['traje_id'],
       traje: Traje.fromMap(map),
     );

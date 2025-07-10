@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/traje.dart';
 import '../../models/peca.dart';
 import '../../repositories/traje_repository.dart';
+import '../../repositories/peca_repository.dart';
 import '../widgets/base_scaffold.dart';
 import 'cadastro_traje_page.dart';
 import 'editar_traje_page.dart'; // Tela de edição
@@ -14,6 +15,7 @@ class TrajesPage extends StatefulWidget {
 }
 
 class _TrajesPageState extends State<TrajesPage> {
+  final PecaRepository _pecaRepository = PecaRepository();
   final TrajeRepository _trajeRepository = TrajeRepository();
   final ScrollController _scrollController = ScrollController();
 
@@ -42,13 +44,17 @@ class _TrajesPageState extends State<TrajesPage> {
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novasIntegrantes = await _trajeRepository.listarTrajesPaginado(_pageSize, _offset);
+    final novosTrajes = await _trajeRepository.listarTrajesPaginado(_pageSize, _offset);
+    for (var traje in novosTrajes) {
+      final pecas = await _pecaRepository.listarPorTraje(traje.id!);
+      _pecasPorTraje[traje.id!] = pecas;
+    }
 
     setState(() {
-      _trajes.addAll(novasIntegrantes);
+      _trajes.addAll(novosTrajes);
       _isLoading = false;
       _offset += _pageSize;
-      if (novasIntegrantes.length < _pageSize) {
+      if (novosTrajes.length < _pageSize) {
         _hasMore = false;
       }
     });

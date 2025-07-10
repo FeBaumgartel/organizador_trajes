@@ -26,7 +26,7 @@ class Traje{
     return Traje(
       id: map['traje_id'] ?? map['id'],
       nome: map['traje_nome'] ?? map['nome'],
-      quantidadeCompletos: map['traje_quantidade_completos'] ??map['quantidade_completos'],
+      quantidadeCompletos: map['traje_quantidade_completos'] ?? map['quantidade_completos'],
       quantidadeUsados: map['traje_quantidade_usados'] ??map['quantidade_usados'],
       categoria: Categoria.fromMap(map),
       grupo: Grupo.fromMap(map),

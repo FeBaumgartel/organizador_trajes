@@ -38,6 +38,26 @@ class TrajeRepository {
     return resultado.map((map) => Traje.fromMap(map)).toList();
   }
 
+  Future<List<Traje>> buscarPorCategoria(int categoriaId) async {
+    final db = await DB.instance.database;
+    final maps = await db.rawQuery('''
+      SELECT 
+        trajes.id AS traje_id,
+        trajes.nome AS traje_nome,
+        trajes.quantidade_completos AS traje_quantidade_completos,
+        categorias.id AS categoria_id,
+        categorias.nome AS categoria_nome,
+        grupos.id AS grupo_id,
+        grupos.nome AS grupo_nome
+      FROM trajes
+      INNER JOIN categorias ON trajes.categoria_id = categorias.id
+      INNER JOIN grupos ON trajes.grupo_id = grupos.id
+      WHERE categorias.id = ?
+    ''', [categoriaId]);
+
+    return maps.map((map) => Traje.fromMap(map)).toList();
+  }
+
   Future<Traje> buscarPorId(int id) async {
     final db = await DB.instance.database;
     final resultado = await db.rawQuery('''
