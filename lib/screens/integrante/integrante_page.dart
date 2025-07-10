@@ -3,6 +3,7 @@ import '../../models/integrante.dart';
 import '../../repositories/integrante_repository.dart';
 import 'cadastro_integrante_page.dart';
 import 'editar_integrante_page.dart';
+import 'visualizar_integrante_page.dart';
 import '../widgets/base_scaffold.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../widgets/vincular_peca_integrante_page.dart';
@@ -139,6 +140,14 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => VisualizarIntegrantePage(integrante: integrante),
+                        ),
+                      );
+                    },
                   );
                 } else {
                   return const Padding(

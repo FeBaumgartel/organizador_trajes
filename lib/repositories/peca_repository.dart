@@ -33,6 +33,30 @@ class PecaRepository {
     return resultado.map((map) => Peca.fromMap(map)).toList();
   }
 
+  Future<List<Peca>> listarPorIntegrante(int integranteId) async {
+    final db = await DB.instance.database;
+    final maps = await db.rawQuery('''
+      SELECT p.*, 
+      t.nome AS traje_nome,
+      t.quantidade_completos AS traje_quantidade_completos,
+      t.quantidade_usados AS traje_quantidade_usados,
+      g.nome AS grupo_nome,
+      c.nome AS categoria_nome
+      FROM pecas p
+      INNER JOIN pecas_integrantes pi ON p.id = pi.peca_id
+      INNER JOIN trajes t ON p.traje_id = t.id
+      INNER JOIN grupos g ON t.grupo_id = g.id
+      INNER JOIN categorias c ON t.categoria_id = c.id
+      WHERE pi.integrante_id = ?
+    ''', [integranteId]);
+
+    return maps.map((map) {
+      final peca = Peca.fromMap(map);
+      peca.traje.nome = map['traje_nome'] as String;
+      return peca;
+    }).toList();
+  }
+
   Future<int> atualizar(Peca peca) async {
     if(peca.id == null){
       return await inserir(peca);

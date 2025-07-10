@@ -48,8 +48,8 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
     setState(() {
       _pecas.add(Peca(
         nome: '',
-        quantidade: 0,
-        quantidadeUsados: 0,
+        quantidade: int.parse(_quantidadeCompletosController.text.trim()),
+        quantidadeUsados: int.tryParse(_quantidadeUsadosController.text.trim()),
         traje: Traje(nome: "", quantidadeCompletos: 0, categoria: Categoria(nome: '', grupo: Grupo(nome: '')), grupo: Grupo(nome: '')),
       ));
     });

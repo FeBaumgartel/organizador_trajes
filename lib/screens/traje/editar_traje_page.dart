@@ -26,7 +26,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
   final PecaRepository _pecaRepository = PecaRepository();
 
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _quantidadeController = TextEditingController();
+  final TextEditingController _quantidadeCompletosController = TextEditingController();
   final TextEditingController _quantidadeUsadosController = TextEditingController();
 
   List<Grupo> _grupos = [];
@@ -43,7 +43,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
   void initState() {
     super.initState();
     _nomeController.text = widget.traje.nome;
-    _quantidadeController.text = widget.traje.quantidadeCompletos.toString();
+    _quantidadeCompletosController.text = widget.traje.quantidadeCompletos.toString();
     _quantidadeUsadosController.text = (widget.traje.quantidadeUsados ?? 0).toString();
 
     _grupoSelecionado = widget.traje.grupo; // seleciona o grupo atual
@@ -95,8 +95,8 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
       // Adiciona uma nova peça em branco
       _pecas.add(Peca(
         nome: '',
-        quantidade: 0,
-        quantidadeUsados: 0,
+        quantidade: int.parse(_quantidadeCompletosController.text.trim()),
+        quantidadeUsados: int.tryParse(_quantidadeUsadosController.text.trim()),
         trajeId: widget.traje.id, // Associa o traje ao criar uma nova peça
         traje: widget.traje, // Associa o traje ao criar uma nova peça
       ));
@@ -107,7 +107,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
     // Cria um novo traje com as alterações
     final atualizadoTraje = widget.traje.copyWith(
       nome: _nomeController.text,
-      quantidadeCompletos: int.parse(_quantidadeController.text),
+      quantidadeCompletos: int.parse(_quantidadeCompletosController.text),
       quantidadeUsados: int.tryParse(_quantidadeUsadosController.text),
       categoria: _categoriaSelecionada!,
       grupo: _grupoSelecionado!,
@@ -150,7 +150,7 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _quantidadeController,
+                controller: _quantidadeCompletosController,
                 decoration: const InputDecoration(
                   labelText: 'Quantidade completos',
                   labelStyle: TextStyle(color: Colors.white),
