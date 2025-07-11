@@ -65,7 +65,11 @@ class _CadastroIntegrantePageState extends State<CadastroIntegrantePage> {
       final novoIntegrante = Integrante(
         nome: _nomeController.text,
         grupo: Grupo(id: _grupoSelecionado!.id!, nome: ''),
-        categoria: Categoria(id: _categoriaSelecionada!.id!, nome: '', grupo: _grupoSelecionado!),
+        categoria: Categoria(
+          id: _categoriaSelecionada!.id!,
+          nome: '',
+          grupo: _grupoSelecionado!,
+        ),
       );
 
       await _integranteRepository.inserir(novoIntegrante);
@@ -118,8 +122,7 @@ class _CadastroIntegrantePageState extends State<CadastroIntegrantePage> {
                   ),
                 );
               }).toList(),
-              validator: (value) =>
-                  value == null ? 'Selecione um grupo' : null,
+              validator: (value) => value == null ? 'Selecione um grupo' : null,
             ),
             const SizedBox(height: 16),
             _carregandoCategorias
@@ -145,15 +148,11 @@ class _CadastroIntegrantePageState extends State<CadastroIntegrantePage> {
                         ),
                       );
                     }).toList(),
-                    validator: (value) => value == null
-                        ? 'Selecione uma categoria'
-                        : null,
+                    validator: (value) =>
+                        value == null ? 'Selecione uma categoria' : null,
                   ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _salvar,
-              child: const Text('Salvar'),
-            ),
+            ElevatedButton(onPressed: _salvar, child: const Text('Salvar')),
           ],
         ),
       ),

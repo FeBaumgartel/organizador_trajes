@@ -1,7 +1,7 @@
 import 'grupo.dart';
 import 'categoria.dart';
 
-class Integrante{
+class Integrante {
   final int? id;
   final String nome;
   final Categoria categoria;
@@ -11,7 +11,7 @@ class Integrante{
     this.id,
     required this.nome,
     required this.categoria,
-    required this.grupo
+    required this.grupo,
   });
 
   factory Integrante.fromMap(Map<String, dynamic> map) {

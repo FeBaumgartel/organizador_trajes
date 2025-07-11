@@ -9,7 +9,8 @@ class PecaIntegranteRepository {
 
   Future<List<PecaIntegrante>> listarPorIntegrante(int integranteId) async {
     final db = await DB.instance.database;
-    final resultado = await db.rawQuery('''
+    final resultado = await db.rawQuery(
+      '''
       SELECT 
         pi.id AS pi_id,
         pi.peca_id,
@@ -21,7 +22,9 @@ class PecaIntegranteRepository {
       INNER JOIN pecas p ON pi.peca_id = p.id
       INNER JOIN trajes t ON pi.traje_id = t.id
       WHERE pi.integrante_id = ?
-    ''', [integranteId]);
+    ''',
+      [integranteId],
+    );
 
     return resultado.map((map) => PecaIntegrante.fromMap(map)).toList();
   }

@@ -17,10 +17,12 @@ class VincularPecaIntegrantePage extends StatefulWidget {
   const VincularPecaIntegrantePage({super.key});
 
   @override
-  State<VincularPecaIntegrantePage> createState() => _VincularPecaIntegrantePageState();
+  State<VincularPecaIntegrantePage> createState() =>
+      _VincularPecaIntegrantePageState();
 }
 
-class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage> {
+class _VincularPecaIntegrantePageState
+    extends State<VincularPecaIntegrantePage> {
   final _grupoRepository = GrupoRepository();
   final _categoriaRepository = CategoriaRepository();
   final _integranteRepository = IntegranteRepository();
@@ -53,7 +55,9 @@ class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage>
 
   Future<void> _carregarCategorias() async {
     if (_grupoSelecionado == null) return;
-    final categorias = await _categoriaRepository.buscarPorGrupo(_grupoSelecionado!.id!);
+    final categorias = await _categoriaRepository.buscarPorGrupo(
+      _grupoSelecionado!.id!,
+    );
     setState(() {
       _categoriaSelecionada = null;
       _categorias = categorias;
@@ -67,8 +71,12 @@ class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage>
   Future<void> _carregarIntegrantesETrajes() async {
     if (_categoriaSelecionada == null) return;
 
-    final integrantes = await _integranteRepository.buscarPorCategoria(_categoriaSelecionada!.id!);
-    final trajes = await _trajeRepository.buscarPorCategoria(_categoriaSelecionada!.id!);
+    final integrantes = await _integranteRepository.buscarPorCategoria(
+      _categoriaSelecionada!.id!,
+    );
+    final trajes = await _trajeRepository.buscarPorCategoria(
+      _categoriaSelecionada!.id!,
+    );
 
     setState(() {
       _integrantes = integrantes;
@@ -93,7 +101,10 @@ class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage>
   }
 
   Future<void> _salvar() async {
-    if (_integranteSelecionado == null || _trajeSelecionado == null || _pecasSelecionadas.isEmpty) return;
+    if (_integranteSelecionado == null ||
+        _trajeSelecionado == null ||
+        _pecasSelecionadas.isEmpty)
+      return;
 
     for (final pecaId in _pecasSelecionadas) {
       final peca = _pecas.firstWhere((p) => p.id == pecaId);
@@ -106,7 +117,9 @@ class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage>
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Peças vinculadas com sucesso!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Peças vinculadas com sucesso!')),
+      );
       Navigator.pop(context);
     }
   }
@@ -121,7 +134,10 @@ class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage>
           child: Column(
             children: [
               DropdownButtonFormField<Grupo>(
-                decoration: const InputDecoration(labelText: 'Grupo'),
+                decoration: const InputDecoration(
+                  labelText: 'Grupo',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 value: _grupoSelecionado,
                 onChanged: (grupo) {
                   setState(() {
@@ -130,37 +146,99 @@ class _VincularPecaIntegrantePageState extends State<VincularPecaIntegrantePage>
                   });
                   _carregarCategorias();
                 },
-                items: _grupos.map((g) => DropdownMenuItem(value: g, child: Text(g.nome))).toList(),
+                items: _grupos
+                    .map((g) => DropdownMenuItem(value: g, child: Text(g.nome)))
+                    .toList(),
+                selectedItemBuilder: (BuildContext context) {
+                  return _grupos
+                      .map(
+                        (g) => Text(
+                          g.nome,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      )
+                      .toList();
+                },
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<Categoria>(
-                decoration: const InputDecoration(labelText: 'Categoria'),
+                decoration: const InputDecoration(
+                  labelText: 'Categoria',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 value: _categoriaSelecionada,
                 onChanged: (categoria) {
                   setState(() => _categoriaSelecionada = categoria);
                   _carregarIntegrantesETrajes();
                 },
-                items: _categorias.map((c) => DropdownMenuItem(value: c, child: Text(c.nome))).toList(),
+                items: _categorias
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c.nome)))
+                    .toList(),
+                selectedItemBuilder: (BuildContext context) {
+                  return _categorias
+                      .map(
+                        (c) => Text(
+                          c.nome,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      )
+                      .toList();
+                },
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<Integrante>(
-                decoration: const InputDecoration(labelText: 'Integrante'),
+                decoration: const InputDecoration(
+                  labelText: 'Integrante',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 value: _integranteSelecionado,
-                onChanged: (integrante) => setState(() => _integranteSelecionado = integrante),
-                items: _integrantes.map((i) => DropdownMenuItem(value: i, child: Text(i.nome))).toList(),
+                onChanged: (integrante) =>
+                    setState(() => _integranteSelecionado = integrante),
+                items: _integrantes
+                    .map((i) => DropdownMenuItem(value: i, child: Text(i.nome)))
+                    .toList(),
+                selectedItemBuilder: (BuildContext context) {
+                  return _integrantes
+                      .map(
+                        (i) => Text(
+                          i.nome,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      )
+                      .toList();
+                },
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<Traje>(
-                decoration: const InputDecoration(labelText: 'Traje'),
+                decoration: const InputDecoration(
+                  labelText: 'Traje',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
                 value: _trajeSelecionado,
                 onChanged: (traje) {
                   setState(() => _trajeSelecionado = traje);
                   _carregarPecas();
                 },
-                items: _trajes.map((t) => DropdownMenuItem(value: t, child: Text(t.nome))).toList(),
+                items: _trajes
+                    .map((t) => DropdownMenuItem(value: t, child: Text(t.nome)))
+                    .toList(),
+                selectedItemBuilder: (BuildContext context) {
+                  return _trajes
+                      .map(
+                        (t) => Text(
+                          t.nome,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      )
+                      .toList();
+                },
               ),
               const SizedBox(height: 24),
-              if (_pecas.isNotEmpty) const Text('Selecione as peças:', style: TextStyle(fontWeight: FontWeight.bold)),
+              if (_pecas.isNotEmpty)
+                const Text(
+                  'Selecione as peças:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               Wrap(
                 spacing: 10,
                 children: _pecas.map((peca) {

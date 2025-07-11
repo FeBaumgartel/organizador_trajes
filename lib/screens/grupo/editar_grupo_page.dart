@@ -25,13 +25,10 @@ class _EditarGrupoPageState extends State<EditarGrupoPage> {
 
   Future<void> _salvar() async {
     // Cria um novo grupo com as alterações
-    final atualizadoGrupo = widget.grupo.copyWith(
-      nome: _nomeController.text,
-    );
+    final atualizadoGrupo = widget.grupo.copyWith(nome: _nomeController.text);
 
     // Salva o grupo atualizado
     await _grupoRepository.atualizar(atualizadoGrupo);
-
 
     if (mounted) Navigator.pop(context, true);
   }

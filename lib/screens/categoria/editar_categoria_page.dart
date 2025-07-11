@@ -49,7 +49,6 @@ class _EditarCategoriaPageState extends State<EditarCategoriaPage> {
     // Salva a categoria atualizado
     await _categoriaRepository.atualizar(atualizadoCategoria);
 
-
     if (mounted) Navigator.pop(context, true);
   }
 
@@ -81,22 +80,21 @@ class _EditarCategoriaPageState extends State<EditarCategoriaPage> {
                 labelStyle: TextStyle(color: Colors.white),
               ),
               value: _grupos.any((g) => g.id == _grupoSelecionado?.id)
-                ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
-                : null,
+                  ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
+                  : null,
               onChanged: (grupo) {
                 setState(() => _grupoSelecionado = grupo);
               },
               items: _grupos.map((grupo) {
-                return DropdownMenuItem(
-                  value: grupo,
-                  child: Text(grupo.nome),
-                );
+                return DropdownMenuItem(value: grupo, child: Text(grupo.nome));
               }).toList(),
               selectedItemBuilder: (BuildContext context) {
                 return _grupos.map((grupo) {
                   return Text(
                     grupo.nome,
-                    style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ), // <-- Texto selecionado (branco)
                   );
                 }).toList();
               },

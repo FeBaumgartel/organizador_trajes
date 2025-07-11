@@ -49,10 +49,7 @@ class _CadastroGrupoPageState extends State<CadastroGrupoPage> {
                 },
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _salvar,
-                child: const Text('Salvar'),
-              ),
+              ElevatedButton(onPressed: _salvar, child: const Text('Salvar')),
             ],
           ),
         ),

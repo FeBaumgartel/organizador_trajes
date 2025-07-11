@@ -1,6 +1,6 @@
 import 'traje.dart';
 
-class Peca{
+class Peca {
   int? id;
   String nome;
   int quantidade;
@@ -14,7 +14,7 @@ class Peca{
     required this.quantidade,
     this.quantidadeUsados,
     this.trajeId,
-    required this.traje
+    required this.traje,
   });
 
   factory Peca.fromMap(Map<String, dynamic> map) {
@@ -22,7 +22,8 @@ class Peca{
       id: map['peca_id'] ?? map['id'],
       nome: map['peca_nome'] ?? map['nome'],
       quantidade: map['peca_quantidade'] ?? map['quantidade'],
-      quantidadeUsados: map['peca_quantidade_usados'] ?? map['quantidade_usados'],
+      quantidadeUsados:
+          map['peca_quantidade_usados'] ?? map['quantidade_usados'],
       trajeId: map['peca_traje_id'] ?? map['traje_id'],
       traje: Traje.fromMap(map),
     );
@@ -38,11 +39,7 @@ class Peca{
     };
   }
 
-  Peca copyWith({
-    String? nome,
-    int? quantidade,
-    int? quantidadeUsados,
-  }) {
+  Peca copyWith({String? nome, int? quantidade, int? quantidadeUsados}) {
     return Peca(
       id: this.id,
       nome: nome ?? this.nome,

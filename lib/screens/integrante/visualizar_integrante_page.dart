@@ -11,7 +11,8 @@ class VisualizarIntegrantePage extends StatefulWidget {
   const VisualizarIntegrantePage({super.key, required this.integrante});
 
   @override
-  State<VisualizarIntegrantePage> createState() => _VisualizarIntegrantePageState();
+  State<VisualizarIntegrantePage> createState() =>
+      _VisualizarIntegrantePageState();
 }
 
 class _VisualizarIntegrantePageState extends State<VisualizarIntegrantePage> {
@@ -26,7 +27,9 @@ class _VisualizarIntegrantePageState extends State<VisualizarIntegrantePage> {
   }
 
   Future<void> _carregarPecas() async {
-    final pecas = await _pecaRepository.listarPorIntegrante(widget.integrante.id!);
+    final pecas = await _pecaRepository.listarPorIntegrante(
+      widget.integrante.id!,
+    );
 
     final Map<int, Traje> trajesMap = {};
     for (var peca in pecas) {
@@ -54,37 +57,37 @@ class _VisualizarIntegrantePageState extends State<VisualizarIntegrantePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _pecasPorTraje.isEmpty
-              ? const Center(child: Text('Nenhuma peça vinculada.'))
-              : ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: _pecasPorTraje.entries.map((entry) {
-                    final traje = entry.key;
-                    final pecas = entry.value;
+          ? const Center(child: Text('Nenhuma peça vinculada.'))
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: _pecasPorTraje.entries.map((entry) {
+                final traje = entry.key;
+                final pecas = entry.value;
 
-                    return ExpansionTile(
+                return ExpansionTile(
+                  title: Text(
+                    traje.nome,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    'Grupo: ${traje.grupo.nome} | Categoria: ${traje.categoria.nome}',
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+                  children: pecas.map((peca) {
+                    return ListTile(
                       title: Text(
-                        traje.nome,
+                        peca.nome,
                         style: const TextStyle(color: Colors.white),
                       ),
                       subtitle: Text(
-                        'Grupo: ${traje.grupo.nome} | Categoria: ${traje.categoria.nome}',
-                        style: const TextStyle(color: Colors.white70),
+                        'Quantidade Livre: ${peca.quantidade - (peca.quantidadeUsados ?? 0)}',
+                        style: const TextStyle(color: Colors.white54),
                       ),
-                      children: pecas.map((peca) {
-                        return ListTile(
-                          title: Text(
-                            peca.nome,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            'Quantidade Livre: ${peca.quantidade - (peca.quantidadeUsados ?? 0)}',
-                            style: const TextStyle(color: Colors.white54),
-                          ),
-                        );
-                      }).toList(),
                     );
                   }).toList(),
-                ),
+                );
+              }).toList(),
+            ),
     );
   }
 }

@@ -41,7 +41,10 @@ class _GruposPageState extends State<GruposPage> {
   Future<void> _carregarMaisGrupos() async {
     setState(() => _isLoading = true);
 
-    final novosGrupos = await _repository.listarGruposPaginado(_pageSize, _offset);
+    final novosGrupos = await _repository.listarGruposPaginado(
+      _pageSize,
+      _offset,
+    );
 
     setState(() {
       _grupos.addAll(novosGrupos);
@@ -56,9 +59,7 @@ class _GruposPageState extends State<GruposPage> {
   void _editarGrupo(Grupo grupo) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => EditarGrupoPage(grupo: grupo),
-      ),
+      MaterialPageRoute(builder: (context) => EditarGrupoPage(grupo: grupo)),
     );
   }
 
@@ -69,8 +70,14 @@ class _GruposPageState extends State<GruposPage> {
         title: const Text('Confirmar Exclusão'),
         content: Text('Deseja realmente excluir o grupo "${grupo.nome}"?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir'),
+          ),
         ],
       ),
     );
@@ -95,43 +102,49 @@ class _GruposPageState extends State<GruposPage> {
     return BaseScaffold(
       title: 'Grupos',
       body: _grupos.isEmpty && _isLoading
-    ? ListView.builder(
-        itemCount: 5, // Exibe 5 skeletons
-        itemBuilder: (_, __) => const GrupoSkeleton(),
-      )
-    : ListView.builder(
-        controller: _scrollController,
-        itemCount: _grupos.length + (_isLoading || _hasMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index < _grupos.length) {
-            final grupo = _grupos[index];
-            return ListTile(
-              title: Text(
-                grupo.nome,
-                style: const TextStyle(color: Colors.white),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: () => _editarGrupo(grupo),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.redAccent),
-                    onPressed: () => _deletarGrupo(grupo),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-        },
-      ),
+          ? ListView.builder(
+              itemCount: 5, // Exibe 5 skeletons
+              itemBuilder: (_, __) => const GrupoSkeleton(),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: _grupos.length + (_isLoading || _hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < _grupos.length) {
+                  final grupo = _grupos[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      title: Text(
+                        grupo.nome,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.black),
+                            onPressed: () => _editarGrupo(grupo),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
+                            ),
+                            onPressed: () => _deletarGrupo(grupo),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -171,11 +184,7 @@ class GrupoSkeleton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         color: Colors.white24,
       ),
-      trailing: Container(
-        width: 24,
-        height: 24,
-        color: Colors.white24,
-      ),
+      trailing: Container(width: 24, height: 24, color: Colors.white24),
     );
   }
 }

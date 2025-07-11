@@ -39,11 +39,13 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
     });
   }
 
-
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novasIntegrantes = await _repository.listarIntegrantesPaginado(_pageSize, _offset);
+    final novasIntegrantes = await _repository.listarIntegrantesPaginado(
+      _pageSize,
+      _offset,
+    );
 
     setState(() {
       _integrantes.addAll(novasIntegrantes);
@@ -69,10 +71,18 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmar Exclusão'),
-        content: Text('Deseja realmente excluir o integrante "${integrante.nome}"?'),
+        content: Text(
+          'Deseja realmente excluir o integrante "${integrante.nome}"?',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir'),
+          ),
         ],
       ),
     );
@@ -118,36 +128,44 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
               itemBuilder: (context, index) {
                 if (index < _integrantes.length) {
                   final integrante = _integrantes[index];
-                  return ListTile(
-                    title: Text(
-                      integrante.nome,
-                      style: const TextStyle(color: Colors.white),
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      title: Text(
+                        integrante.nome,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        'Grupo: ${integrante.grupo.nome} | Categoria: ${integrante.categoria.nome}',
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.black),
+                            onPressed: () => _editarIntegrante(integrante),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
+                            ),
+                            onPressed: () => _deletarIntegrante(integrante),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VisualizarIntegrantePage(
+                              integrante: integrante,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    subtitle: Text(
-                      'Grupo: ${integrante.grupo.nome} | Categoria: ${integrante.categoria.nome}',
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.white),
-                          onPressed: () => _editarIntegrante(integrante),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.redAccent),
-                          onPressed: () => _deletarIntegrante(integrante),
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => VisualizarIntegrantePage(integrante: integrante),
-                        ),
-                      );
-                    },
                   );
                 } else {
                   return const Padding(
@@ -172,7 +190,9 @@ class _IntegrantesPageState extends State<IntegrantesPage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const VincularPecaIntegrantePage()),
+                MaterialPageRoute(
+                  builder: (_) => const VincularPecaIntegrantePage(),
+                ),
               );
             },
           ),
@@ -207,15 +227,8 @@ class IntegranteSkeleton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         color: Colors.white24,
       ),
-      subtitle: Container(
-        height: 12,
-        color: Colors.white24,
-      ),
-      trailing: Container(
-        width: 24,
-        height: 24,
-        color: Colors.white24,
-      ),
+      subtitle: Container(height: 12, color: Colors.white24),
+      trailing: Container(width: 24, height: 24, color: Colors.white24),
     );
   }
 }

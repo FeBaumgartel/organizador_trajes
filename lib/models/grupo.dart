@@ -12,20 +12,11 @@ class Grupo {
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      if (id != null) 'id': id,
-      'nome': nome,
-    };
+    return {if (id != null) 'id': id, 'nome': nome};
   }
 
   // Método copyWith
-  Grupo copyWith({
-    int? id,
-    String? nome,
-  }) {
-    return Grupo(
-      id: id ?? this.id,
-      nome: nome ?? this.nome,
-    );
+  Grupo copyWith({int? id, String? nome}) {
+    return Grupo(id: id ?? this.id, nome: nome ?? this.nome);
   }
 }

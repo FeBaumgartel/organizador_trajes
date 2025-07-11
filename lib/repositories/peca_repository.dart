@@ -9,7 +9,8 @@ class PecaRepository {
 
   Future<List<Peca>> listarPorTraje(int trajeId) async {
     final db = await DB.instance.database;
-    final resultado = await db.rawQuery('''
+    final resultado = await db.rawQuery(
+      '''
       SELECT 
         pecas.id AS peca_id,
         pecas.nome AS peca_nome,
@@ -28,14 +29,17 @@ class PecaRepository {
       INNER JOIN categorias ON trajes.categoria_id = categorias.id
       INNER JOIN grupos ON trajes.grupo_id = grupos.id
       WHERE pecas.traje_id = ?
-    ''', [trajeId]);
+    ''',
+      [trajeId],
+    );
 
     return resultado.map((map) => Peca.fromMap(map)).toList();
   }
 
   Future<List<Peca>> listarPorIntegrante(int integranteId) async {
     final db = await DB.instance.database;
-    final maps = await db.rawQuery('''
+    final maps = await db.rawQuery(
+      '''
       SELECT p.*, 
       t.nome AS traje_nome,
       t.quantidade_completos AS traje_quantidade_completos,
@@ -48,7 +52,9 @@ class PecaRepository {
       INNER JOIN grupos g ON t.grupo_id = g.id
       INNER JOIN categorias c ON t.categoria_id = c.id
       WHERE pi.integrante_id = ?
-    ''', [integranteId]);
+    ''',
+      [integranteId],
+    );
 
     return maps.map((map) {
       final peca = Peca.fromMap(map);
@@ -58,7 +64,7 @@ class PecaRepository {
   }
 
   Future<int> atualizar(Peca peca) async {
-    if(peca.id == null){
+    if (peca.id == null) {
       return await inserir(peca);
     }
     final db = await DB.instance.database;
@@ -72,10 +78,6 @@ class PecaRepository {
 
   Future<int> deletar(int id) async {
     final db = await DB.instance.database;
-    return await db.delete(
-      'pecas',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('pecas', where: 'id = ?', whereArgs: [id]);
   }
 }

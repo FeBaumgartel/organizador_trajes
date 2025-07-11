@@ -19,8 +19,10 @@ class CadastroTrajePage extends StatefulWidget {
 class _CadastroTrajePageState extends State<CadastroTrajePage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _quantidadeCompletosController = TextEditingController();
-  final TextEditingController _quantidadeUsadosController = TextEditingController();
+  final TextEditingController _quantidadeCompletosController =
+      TextEditingController();
+  final TextEditingController _quantidadeUsadosController =
+      TextEditingController();
 
   final GrupoRepository _grupoRepository = GrupoRepository();
   final CategoriaRepository _categoriaRepository = CategoriaRepository();
@@ -46,12 +48,26 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
 
   void _adicionarPeca() {
     setState(() {
-      _pecas.add(Peca(
-        nome: '',
-        quantidade: int.parse(_quantidadeCompletosController.text.trim()),
-        quantidadeUsados: int.tryParse(_quantidadeUsadosController.text.trim()),
-        traje: Traje(nome: "", quantidadeCompletos: 0, categoria: Categoria(nome: '', grupo: Grupo(nome: '')), grupo: Grupo(nome: '')),
-      ));
+      String quantidade = _quantidadeCompletosController.text.trim();
+      String quantidadeUsados = _quantidadeUsadosController.text.trim();
+      _pecas.add(
+        Peca(
+          nome: '',
+          quantidade: quantidade.isEmpty ? 0 : int.parse(quantidade),
+          quantidadeUsados: quantidadeUsados.isEmpty
+              ? 0
+              : int.parse(quantidadeUsados),
+          traje: Traje(
+            nome: "",
+            quantidadeCompletos: 0,
+            categoria: Categoria(
+              nome: '',
+              grupo: Grupo(nome: ''),
+            ),
+            grupo: Grupo(nome: ''),
+          ),
+        ),
+      );
     });
   }
 
@@ -89,11 +105,13 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
 
     final traje = Traje(
       nome: _nomeController.text.trim(),
-      quantidadeCompletos: int.parse(_quantidadeCompletosController.text.trim()),
+      quantidadeCompletos: int.parse(
+        _quantidadeCompletosController.text.trim(),
+      ),
       quantidadeUsados: int.tryParse(_quantidadeUsadosController.text.trim()),
       categoria: _categoriaSelecionada!,
       grupo: _grupoSelecionado!,
-      pecas: _pecas
+      pecas: _pecas,
     );
 
     await _trajeRepository.inserir(traje);
@@ -101,7 +119,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
     if (mounted) Navigator.pop(context, true);
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return BaseScaffold(
       title: 'Cadastrar Traje',
@@ -151,7 +169,7 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                 style: const TextStyle(color: Colors.white),
                 keyboardType: TextInputType.number,
               ),
-              
+
               DropdownButtonFormField<Grupo>(
                 decoration: const InputDecoration(
                   labelText: 'Grupo',
@@ -172,7 +190,9 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                   return _grupos.map((grupo) {
                     return Text(
                       grupo.nome,
-                      style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ), // <-- Texto selecionado (branco)
                     );
                   }).toList();
                 },
@@ -203,7 +223,9 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                         return _categorias.map((categoria) {
                           return Text(
                             categoria.nome,
-                            style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ), // <-- Texto selecionado (branco)
                           );
                         }).toList();
                       },
@@ -211,25 +233,28 @@ class _CadastroTrajePageState extends State<CadastroTrajePage> {
                           value == null ? 'Selecione uma categoria' : null,
                     ),
               const SizedBox(height: 24),
-              const Text('Peças do Traje', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ..._pecas.asMap().entries.map((entry) {
-                      int index = entry.key;
-                      Peca peca = entry.value;
-                      return Column(
-                        key: ValueKey(index),
-                        children: [
-                          PecaForm(
-                            peca: peca,
-                            onSave: (Peca updatedPeca) {
-                              setState(() {
-                                _pecas[index] = updatedPeca;
-                              });
-                            },
-                          ),
-                          const Divider(),
-                        ],
-                      );
-                    }),
+              const Text(
+                'Peças do Traje',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              ..._pecas.asMap().entries.map((entry) {
+                int index = entry.key;
+                Peca peca = entry.value;
+                return Column(
+                  key: ValueKey(index),
+                  children: [
+                    PecaForm(
+                      peca: peca,
+                      onSave: (Peca updatedPeca) {
+                        setState(() {
+                          _pecas[index] = updatedPeca;
+                        });
+                      },
+                    ),
+                    const Divider(),
+                  ],
+                );
+              }),
               TextButton.icon(
                 onPressed: _adicionarPeca,
                 icon: const Icon(Icons.add),

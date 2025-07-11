@@ -41,7 +41,10 @@ class _CadastroCategoriaPageState extends State<CadastroCategoriaPage> {
     if (_formKey.currentState!.validate() && _grupoSelecionado != null) {
       final novaCategoria = Categoria(
         nome: _nomeController.text,
-        grupo: Grupo(id: _grupoSelecionado!.id!, nome: ''), // só precisa do id nesse ponto
+        grupo: Grupo(
+          id: _grupoSelecionado!.id!,
+          nome: '',
+        ), // só precisa do id nesse ponto
       );
 
       await _categoriaRepository.inserir(novaCategoria);
@@ -93,14 +96,10 @@ class _CadastroCategoriaPageState extends State<CadastroCategoriaPage> {
                   ),
                 );
               }).toList(),
-              validator: (value) =>
-                  value == null ? 'Selecione um grupo' : null,
+              validator: (value) => value == null ? 'Selecione um grupo' : null,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _salvar,
-              child: const Text('Salvar'),
-            ),
+            ElevatedButton(onPressed: _salvar, child: const Text('Salvar')),
           ],
         ),
       ),

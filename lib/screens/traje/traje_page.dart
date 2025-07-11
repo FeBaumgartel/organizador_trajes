@@ -40,11 +40,14 @@ class _TrajesPageState extends State<TrajesPage> {
       }
     });
   }
-  
+
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novosTrajes = await _trajeRepository.listarTrajesPaginado(_pageSize, _offset);
+    final novosTrajes = await _trajeRepository.listarTrajesPaginado(
+      _pageSize,
+      _offset,
+    );
     for (var traje in novosTrajes) {
       final pecas = await _pecaRepository.listarPorTraje(traje.id!);
       _pecasPorTraje[traje.id!] = pecas;
@@ -73,9 +76,7 @@ class _TrajesPageState extends State<TrajesPage> {
   void _editarTraje(Traje traje) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => EditarTrajePage(traje: traje),
-      ),
+      MaterialPageRoute(builder: (context) => EditarTrajePage(traje: traje)),
     );
   }
 
@@ -86,8 +87,14 @@ class _TrajesPageState extends State<TrajesPage> {
         title: const Text('Confirmar Exclusão'),
         content: Text('Deseja realmente excluir o traje "${traje.nome}"?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir'),
+          ),
         ],
       ),
     );
@@ -115,47 +122,56 @@ class _TrajesPageState extends State<TrajesPage> {
                   final traje = _trajes[index];
                   final pecas = _pecasPorTraje[traje.id!] ?? [];
 
-                  return ExpansionTile(
-                    title: Text(
-                      traje.nome,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      'Grupo: ${traje.grupo.nome} | Categoria: ${traje.categoria.nome} | Qtd. Completos: ${traje.quantidadeCompletos}',
-                      style: const TextStyle(color: Colors.white70),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.white),
-                          onPressed: () => _editarTraje(traje),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.redAccent),
-                          onPressed: () => _deletarTraje(traje),
-                        ),
-                      ],
-                    ),
-                    children: pecas.isEmpty
-                        ? [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Nenhuma peça cadastrada.', style: TextStyle(color: Colors.white54)),
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ExpansionTile(
+                      title: Text(
+                        traje.nome,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        'Grupo: ${traje.grupo.nome} | Categoria: ${traje.categoria.nome} | Qtd. Completos: ${traje.quantidadeCompletos}',
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.black),
+                            onPressed: () => _editarTraje(traje),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
                             ),
-                          ]
-                        : pecas.map((peca) {
-                            return ListTile(
-                              title: Text(
-                                peca.nome,
-                                style: const TextStyle(color: Colors.white),
+                            onPressed: () => _deletarTraje(traje),
+                          ),
+                        ],
+                      ),
+                      children: pecas.isEmpty
+                          ? [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Nenhuma peça cadastrada.',
+                                  style: TextStyle(color: Colors.black87),
+                                ),
                               ),
-                              subtitle: Text(
-                                'Quantidade: ${peca.quantidade} | Usados: ${peca.quantidadeUsados ?? 0}',
-                                style: const TextStyle(color: Colors.white54),
-                              ),
-                            );
-                          }).toList(),
+                            ]
+                          : pecas.map((peca) {
+                              return ListTile(
+                                title: Text(
+                                  peca.nome,
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                                subtitle: Text(
+                                  'Quantidade: ${peca.quantidade} | Usados: ${peca.quantidadeUsados ?? 0}',
+                                  style: const TextStyle(color: Colors.black87),
+                                ),
+                              );
+                            }).toList(),
+                    ),
                   );
                 } else {
                   return const Padding(
@@ -165,7 +181,7 @@ class _TrajesPageState extends State<TrajesPage> {
                 }
               },
             ),
-            
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final resultado = Navigator.push(
@@ -179,7 +195,7 @@ class _TrajesPageState extends State<TrajesPage> {
         },
         tooltip: 'Cadastrar novo traje',
         child: const Icon(Icons.add),
-      )
+      ),
     );
   }
 
@@ -209,10 +225,7 @@ class TrajeSkeleton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         color: Colors.white24,
       ),
-      subtitle: Container(
-        height: 12,
-        color: Colors.white24,
-      ),
+      subtitle: Container(height: 12, color: Colors.white24),
     );
   }
 }

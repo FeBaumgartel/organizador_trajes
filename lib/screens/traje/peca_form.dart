@@ -21,8 +21,12 @@ class _PecaFormState extends State<PecaForm> {
     super.initState();
 
     _nomeController = TextEditingController(text: widget.peca.nome);
-    _quantidadeController = TextEditingController(text: widget.peca.quantidade.toString());
-    _quantidadeUsadosController = TextEditingController(text: widget.peca.quantidadeUsados?.toString() ?? '0');
+    _quantidadeController = TextEditingController(
+      text: widget.peca.quantidade.toString(),
+    );
+    _quantidadeUsadosController = TextEditingController(
+      text: widget.peca.quantidadeUsados?.toString() ?? '0',
+    );
 
     _nomeController.addListener(_onFormChanged);
     _quantidadeController.addListener(_onFormChanged);
@@ -32,7 +36,8 @@ class _PecaFormState extends State<PecaForm> {
   void _onFormChanged() {
     final nome = _nomeController.text;
     final quantidade = int.tryParse(_quantidadeController.text) ?? 0;
-    final quantidadeUsados = int.tryParse(_quantidadeUsadosController.text) ?? 0;
+    final quantidadeUsados =
+        int.tryParse(_quantidadeUsadosController.text) ?? 0;
 
     final updatedPeca = widget.peca.copyWith(
       nome: nome,

@@ -5,11 +5,7 @@ class Categoria {
   final String nome;
   final Grupo grupo;
 
-  Categoria({
-    this.id,
-    required this.nome,
-    required this.grupo,
-  });
+  Categoria({this.id, required this.nome, required this.grupo});
 
   factory Categoria.fromMap(Map<String, dynamic> map) {
     return Categoria(
@@ -28,11 +24,7 @@ class Categoria {
   }
 
   // Método copyWith
-  Categoria copyWith({
-    int? id,
-    String? nome,
-    Grupo? grupo,
-  }) {
+  Categoria copyWith({int? id, String? nome, Grupo? grupo}) {
     return Categoria(
       id: id ?? this.id,
       nome: nome ?? this.nome,

@@ -36,11 +36,13 @@ class _CategoriasPageState extends State<CategoriasPage> {
     });
   }
 
-
   Future<void> _carregarMais() async {
     setState(() => _isLoading = true);
 
-    final novasCategorias = await _repository.listarCategoriasPaginado(_pageSize, _offset);
+    final novasCategorias = await _repository.listarCategoriasPaginado(
+      _pageSize,
+      _offset,
+    );
 
     setState(() {
       _categorias.addAll(novasCategorias);
@@ -66,10 +68,18 @@ class _CategoriasPageState extends State<CategoriasPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmar Exclusão'),
-        content: Text('Deseja realmente excluir a categoria "${categoria.nome}"?'),
+        content: Text(
+          'Deseja realmente excluir a categoria "${categoria.nome}"?',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Excluir')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir'),
+          ),
         ],
       ),
     );
@@ -120,27 +130,33 @@ class _CategoriasPageState extends State<CategoriasPage> {
               itemBuilder: (context, index) {
                 if (index < _categorias.length) {
                   final categoria = _categorias[index];
-                  return ListTile(
-                    title: Text(
-                      categoria.nome,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      'Grupo: ${categoria.grupo.nome}',
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.white),
-                          onPressed: () => _editarCategoria(categoria),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.redAccent),
-                          onPressed: () => _deletarCategoria(categoria),
-                        ),
-                      ],
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      title: Text(
+                        categoria.nome,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        'Grupo: ${categoria.grupo.nome}',
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.black),
+                            onPressed: () => _editarCategoria(categoria),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
+                            ),
+                            onPressed: () => _deletarCategoria(categoria),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 } else {
@@ -180,15 +196,8 @@ class CategoriaSkeleton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         color: Colors.white24,
       ),
-      subtitle: Container(
-        height: 12,
-        color: Colors.white24,
-      ),
-      trailing: Container(
-        width: 24,
-        height: 24,
-        color: Colors.white24,
-      ),
+      subtitle: Container(height: 12, color: Colors.white24),
+      trailing: Container(width: 24, height: 24, color: Colors.white24),
     );
   }
 }

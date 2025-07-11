@@ -13,9 +13,13 @@ class CategoriaRepository {
     return resultado.map((map) => Categoria.fromMap(map)).toList();
   }
 
-  Future<List<Categoria>> listarCategoriasPaginado(int limit, int offset) async {
+  Future<List<Categoria>> listarCategoriasPaginado(
+    int limit,
+    int offset,
+  ) async {
     final db = await DB.instance.database;
-    final maps = await db.rawQuery('''
+    final maps = await db.rawQuery(
+      '''
       SELECT 
         categorias.id AS categoria_id,
         categorias.nome AS categoria_nome,
@@ -24,13 +28,16 @@ class CategoriaRepository {
       FROM categorias
       INNER JOIN grupos ON categorias.grupo_id = grupos.id
       LIMIT ? OFFSET ?
-    ''', [limit, offset]);
+    ''',
+      [limit, offset],
+    );
     return maps.map((map) => Categoria.fromMap(map)).toList();
   }
 
   Future<List<Categoria>> buscarPorGrupo(int grupoId) async {
     final db = await DB.instance.database;
-    final maps = await db.rawQuery('''
+    final maps = await db.rawQuery(
+      '''
       SELECT 
         categorias.id AS categoria_id,
         categorias.nome AS categoria_nome,
@@ -39,7 +46,9 @@ class CategoriaRepository {
       FROM categorias
       INNER JOIN grupos ON categorias.grupo_id = grupos.id
       WHERE grupos.id = ?
-    ''', [grupoId]);
+    ''',
+      [grupoId],
+    );
 
     return maps.map((map) => Categoria.fromMap(map)).toList();
   }
@@ -56,10 +65,6 @@ class CategoriaRepository {
 
   Future<int> deletar(int id) async {
     final db = await DB.instance.database;
-    return await db.delete(
-      'categorias',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('categorias', where: 'id = ?', whereArgs: [id]);
   }
 }

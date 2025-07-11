@@ -5,21 +5,21 @@ import '../models/traje.dart';
 
 class TrajeRepository {
   Future<int> inserir(Traje traje) async {
-  PecaRepository pecaRepository = PecaRepository();
+    PecaRepository pecaRepository = PecaRepository();
     final db = await DB.instance.database;
     int trajeId = await db.insert('trajes', traje.toMap());
     traje.id = trajeId;
-    for(var peca in traje.pecas ?? []){
+    for (var peca in traje.pecas ?? []) {
       peca.traje = traje;
       await pecaRepository.inserir(peca);
     }
     return trajeId;
   }
 
-
   Future<List<Traje>> listarTrajesPaginado(int limit, int offset) async {
     final db = await DB.instance.database;
-    final resultado = await db.rawQuery('''
+    final resultado = await db.rawQuery(
+      '''
       SELECT 
         trajes.id AS traje_id,
         trajes.nome AS traje_nome,
@@ -33,14 +33,17 @@ class TrajeRepository {
       INNER JOIN categorias ON trajes.categoria_id = categorias.id
       INNER JOIN grupos ON trajes.grupo_id = grupos.id
       LIMIT ? OFFSET ?
-    ''', [limit, offset]);
+    ''',
+      [limit, offset],
+    );
 
     return resultado.map((map) => Traje.fromMap(map)).toList();
   }
 
   Future<List<Traje>> buscarPorCategoria(int categoriaId) async {
     final db = await DB.instance.database;
-    final maps = await db.rawQuery('''
+    final maps = await db.rawQuery(
+      '''
       SELECT 
         trajes.id AS traje_id,
         trajes.nome AS traje_nome,
@@ -53,14 +56,17 @@ class TrajeRepository {
       INNER JOIN categorias ON trajes.categoria_id = categorias.id
       INNER JOIN grupos ON trajes.grupo_id = grupos.id
       WHERE categorias.id = ?
-    ''', [categoriaId]);
+    ''',
+      [categoriaId],
+    );
 
     return maps.map((map) => Traje.fromMap(map)).toList();
   }
 
   Future<Traje> buscarPorId(int id) async {
     final db = await DB.instance.database;
-    final resultado = await db.rawQuery('''
+    final resultado = await db.rawQuery(
+      '''
       SELECT 
         trajes.id AS traje_id,
         trajes.nome AS traje_nome,
@@ -74,7 +80,9 @@ class TrajeRepository {
       INNER JOIN categorias ON trajes.categoria_id = categorias.id
       INNER JOIN grupos ON trajes.grupo_id = grupos.id
       WHERE trajes.id = ?
-    ''', [id]);
+    ''',
+      [id],
+    );
 
     if (resultado.isNotEmpty) {
       return Traje.fromMap(resultado.first);
@@ -95,10 +103,6 @@ class TrajeRepository {
 
   Future<int> deletar(int id) async {
     final db = await DB.instance.database;
-    return await db.delete(
-      'trajes',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('trajes', where: 'id = ?', whereArgs: [id]);
   }
 }

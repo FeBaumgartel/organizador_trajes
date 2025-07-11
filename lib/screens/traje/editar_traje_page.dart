@@ -8,7 +8,7 @@ import '../../repositories/peca_repository.dart';
 import '../../repositories/categoria_repository.dart';
 import '../../repositories/grupo_repository.dart';
 import '../widgets/base_scaffold.dart';
-import 'peca_form.dart';  // Importa o componente PecaForm
+import 'peca_form.dart'; // Importa o componente PecaForm
 
 class EditarTrajePage extends StatefulWidget {
   final Traje traje;
@@ -26,8 +26,10 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
   final PecaRepository _pecaRepository = PecaRepository();
 
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _quantidadeCompletosController = TextEditingController();
-  final TextEditingController _quantidadeUsadosController = TextEditingController();
+  final TextEditingController _quantidadeCompletosController =
+      TextEditingController();
+  final TextEditingController _quantidadeUsadosController =
+      TextEditingController();
 
   List<Grupo> _grupos = [];
   List<Categoria> _categorias = [];
@@ -43,15 +45,18 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
   void initState() {
     super.initState();
     _nomeController.text = widget.traje.nome;
-    _quantidadeCompletosController.text = widget.traje.quantidadeCompletos.toString();
-    _quantidadeUsadosController.text = (widget.traje.quantidadeUsados ?? 0).toString();
+    _quantidadeCompletosController.text = widget.traje.quantidadeCompletos
+        .toString();
+    _quantidadeUsadosController.text = (widget.traje.quantidadeUsados ?? 0)
+        .toString();
 
     _grupoSelecionado = widget.traje.grupo; // seleciona o grupo atual
     _carregarGrupos().then((_) {
       if (_grupoSelecionado != null) {
         _carregarCategoriasDoGrupo(_grupoSelecionado!.id!).then((_) {
           setState(() {
-            _categoriaSelecionada = widget.traje.categoria; // seleciona a categoria atual
+            _categoriaSelecionada =
+                widget.traje.categoria; // seleciona a categoria atual
           });
         });
       }
@@ -93,13 +98,17 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
   void _adicionarPeca() {
     setState(() {
       // Adiciona uma nova peça em branco
-      _pecas.add(Peca(
-        nome: '',
-        quantidade: int.parse(_quantidadeCompletosController.text.trim()),
-        quantidadeUsados: int.tryParse(_quantidadeUsadosController.text.trim()),
-        trajeId: widget.traje.id, // Associa o traje ao criar uma nova peça
-        traje: widget.traje, // Associa o traje ao criar uma nova peça
-      ));
+      _pecas.add(
+        Peca(
+          nome: '',
+          quantidade: int.parse(_quantidadeCompletosController.text.trim()),
+          quantidadeUsados: int.tryParse(
+            _quantidadeUsadosController.text.trim(),
+          ),
+          trajeId: widget.traje.id, // Associa o traje ao criar uma nova peça
+          traje: widget.traje, // Associa o traje ao criar uma nova peça
+        ),
+      );
     });
   }
 
@@ -180,8 +189,8 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 value: _grupos.any((g) => g.id == _grupoSelecionado?.id)
-                  ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
-                  : null,
+                    ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
+                    : null,
                 onChanged: (grupo) {
                   setState(() => _grupoSelecionado = grupo);
                   _carregarCategoriasDoGrupo(grupo!.id!);
@@ -196,11 +205,14 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                   return _grupos.map((grupo) {
                     return Text(
                       grupo.nome,
-                      style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ), // <-- Texto selecionado (branco)
                     );
                   }).toList();
                 },
-                validator: (value) => value == null ? 'Selecione um grupo' : null,
+                validator: (value) =>
+                    value == null ? 'Selecione um grupo' : null,
               ),
               const SizedBox(height: 16),
               _carregandoCategorias
@@ -210,9 +222,14 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                         labelText: 'Categoria',
                         labelStyle: TextStyle(color: Colors.white),
                       ),
-                      value: _categorias.any((g) => g.id == _categoriaSelecionada?.id)
-                        ? _categorias.firstWhere((g) => g.id == _categoriaSelecionada?.id)
-                        : null,
+                      value:
+                          _categorias.any(
+                            (g) => g.id == _categoriaSelecionada?.id,
+                          )
+                          ? _categorias.firstWhere(
+                              (g) => g.id == _categoriaSelecionada?.id,
+                            )
+                          : null,
                       onChanged: (categoria) {
                         setState(() {
                           _categoriaSelecionada = categoria;
@@ -228,11 +245,14 @@ class _EditarTrajePageState extends State<EditarTrajePage> {
                         return _categorias.map((categoria) {
                           return Text(
                             categoria.nome,
-                            style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ), // <-- Texto selecionado (branco)
                           );
                         }).toList();
                       },
-                      validator: (value) => value == null ? 'Selecione uma categoria' : null,
+                      validator: (value) =>
+                          value == null ? 'Selecione uma categoria' : null,
                     ),
               const SizedBox(height: 24),
               // Lista de peças, usando PecaForm para editar cada uma delas

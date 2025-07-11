@@ -3,7 +3,7 @@ import 'package:organizador_trajes/models/peca.dart';
 import 'categoria.dart';
 import 'grupo.dart';
 
-class Traje{
+class Traje {
   int? id;
   String nome;
   int quantidadeCompletos;
@@ -19,15 +19,17 @@ class Traje{
     this.quantidadeUsados,
     required this.categoria,
     required this.grupo,
-    this.pecas
+    this.pecas,
   });
 
   factory Traje.fromMap(Map<String, dynamic> map) {
     return Traje(
       id: map['traje_id'] ?? map['id'],
       nome: map['traje_nome'] ?? map['nome'],
-      quantidadeCompletos: map['traje_quantidade_completos'] ?? map['quantidade_completos'],
-      quantidadeUsados: map['traje_quantidade_usados'] ??map['quantidade_usados'],
+      quantidadeCompletos:
+          map['traje_quantidade_completos'] ?? map['quantidade_completos'],
+      quantidadeUsados:
+          map['traje_quantidade_usados'] ?? map['quantidade_usados'],
       categoria: Categoria.fromMap(map),
       grupo: Grupo.fromMap(map),
     );

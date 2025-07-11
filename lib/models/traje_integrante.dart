@@ -1,7 +1,7 @@
 import 'integrante.dart';
 import 'traje.dart';
 
-class TrajeIntegrante{
+class TrajeIntegrante {
   int id;
   Traje traje;
   Integrante integrante;
@@ -11,6 +11,6 @@ class TrajeIntegrante{
     required this.id,
     required this.traje,
     required this.integrante,
-    required this.completo
+    required this.completo,
   });
 }

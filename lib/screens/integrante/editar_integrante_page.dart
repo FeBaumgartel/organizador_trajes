@@ -41,7 +41,8 @@ class _EditarIntegrantePageState extends State<EditarIntegrantePage> {
       if (_grupoSelecionado != null) {
         _carregarCategoriasDoGrupo(_grupoSelecionado!.id!).then((_) {
           setState(() {
-            _categoriaSelecionada = widget.integrante.categoria; // seleciona a categoria atual
+            _categoriaSelecionada =
+                widget.integrante.categoria; // seleciona a categoria atual
           });
         });
       }
@@ -82,7 +83,6 @@ class _EditarIntegrantePageState extends State<EditarIntegrantePage> {
     // Salva o integrante atualizado
     await _integranteRepository.atualizar(atualizadoIntegrante);
 
-
     if (mounted) Navigator.pop(context, true);
   }
 
@@ -114,23 +114,22 @@ class _EditarIntegrantePageState extends State<EditarIntegrantePage> {
                 labelStyle: TextStyle(color: Colors.white),
               ),
               value: _grupos.any((g) => g.id == _grupoSelecionado?.id)
-                ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
-                : null,
+                  ? _grupos.firstWhere((g) => g.id == _grupoSelecionado?.id)
+                  : null,
               onChanged: (grupo) {
                 setState(() => _grupoSelecionado = grupo);
                 _carregarCategoriasDoGrupo(grupo!.id!);
               },
               items: _grupos.map((grupo) {
-                return DropdownMenuItem(
-                  value: grupo,
-                  child: Text(grupo.nome),
-                );
+                return DropdownMenuItem(value: grupo, child: Text(grupo.nome));
               }).toList(),
               selectedItemBuilder: (BuildContext context) {
                 return _grupos.map((grupo) {
                   return Text(
                     grupo.nome,
-                    style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ), // <-- Texto selecionado (branco)
                   );
                 }).toList();
               },
@@ -144,9 +143,14 @@ class _EditarIntegrantePageState extends State<EditarIntegrantePage> {
                       labelText: 'Categoria',
                       labelStyle: TextStyle(color: Colors.white),
                     ),
-                    value: _categorias.any((g) => g.id == _categoriaSelecionada?.id)
-                      ? _categorias.firstWhere((g) => g.id == _categoriaSelecionada?.id)
-                      : null,
+                    value:
+                        _categorias.any(
+                          (g) => g.id == _categoriaSelecionada?.id,
+                        )
+                        ? _categorias.firstWhere(
+                            (g) => g.id == _categoriaSelecionada?.id,
+                          )
+                        : null,
                     onChanged: (categoria) {
                       setState(() {
                         _categoriaSelecionada = categoria;
@@ -162,11 +166,14 @@ class _EditarIntegrantePageState extends State<EditarIntegrantePage> {
                       return _categorias.map((categoria) {
                         return Text(
                           categoria.nome,
-                          style: const TextStyle(color: Colors.white), // <-- Texto selecionado (branco)
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ), // <-- Texto selecionado (branco)
                         );
                       }).toList();
                     },
-                    validator: (value) => value == null ? 'Selecione uma categoria' : null,
+                    validator: (value) =>
+                        value == null ? 'Selecione uma categoria' : null,
                   ),
             const SizedBox(height: 24),
             ElevatedButton(
